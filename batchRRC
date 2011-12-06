@@ -1,0 +1,8 @@
+#!/bin/bash
+
+for k in $( ls images/*.pgm );
+do
+   ./RRC $k
+done
+
+

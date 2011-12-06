@@ -5,7 +5,8 @@
 
 using namespace std;
 
-const double MAX_DISTANCE = 20;
+const double MAX_DISTANCE = 50;
+const double PI = 3.141592653589793;
 
 int dround(double);
 double distance(double x1, double y1, double x2, double y2);
@@ -20,19 +21,22 @@ double curvature(double P0x, double P0y, double P1x, double P1y, double P2x, dou
 double* triangle_incenter(double Ax,double Ay,double Bx,double By,double Cx,double Cy);
 double* find_intersection(double P1x, double P1y, double P2x, double P2y, double P3x, double P3y, double P4x, double P4y);
 double* find_corner(double P1x, double P1y, double P2x, double P2y, double Ix, double Iy, vector<double*> Ctable);
+double angle(double p1x, double p1y, double p2x, double p2y, double p3x, double p3y);
 
 double gradient(double P1x, double P1y, double P2x, double P2y, vector<double*> G);
 
 //int main(int argc, char **argv) {
-vector<double*>* construct_graph(vector<double*> Ltable, vector<double*> Ctable, vector<double*> grad_img, double WIDTH, double LAMBDA1, double LAMBDA2, bool use_corners) {
+vector<double*>* construct_graph(vector<double*> Ltable, vector<double*> Ctable, vector<double*> grad_img, double WIDTH, double LAMBDA, bool homogeneity, bool use_corners, string datafile, double ALPHA) {
 
    double *dataread1, *dataread2;
    double *dataout;
    vector<double*> *Gtable = new vector<double*>;
    double MAX_W1 = 0, MAX_W2 = 0;
    ofstream output;
+   int PSI = 0;
+   if (homogeneity) PSI = 1;
 
-   if (use_corners) output.open("cornerdata");
+   if (use_corners) output.open(datafile.c_str());
    
 
    // PART 1 - SOLID EDGE CONSTRUCTION //
@@ -62,8 +66,8 @@ vector<double*>* construct_graph(vector<double*> Ltable, vector<double*> Ctable,
 
    double P1[2], back1[2], P2[2], back2[2];
    double M1[2], M2[2], *C, *I, curv;
-   double D, w1, area1, area2, carea, gaparea;
-   double G1, G2, gapG;
+   double D, w1, area1, area2, carea, gaparea, alpha, beta;
+   double G1 = 0, G2 = 0, gapG = 0;
    int k, n1, n2, count_dashed = 0;
 
    for (int i=0; i<(int)Ltable.size()-1; i++) {
@@ -93,7 +97,8 @@ vector<double*>* construct_graph(vector<double*> Ltable, vector<double*> Ctable,
          }
          n1 = 2*i;
          area1 = area(P1[0],P1[1],back1[0],back1[1]);
-         //G1 = gradient(P1[0],P1[1],back1[0],back1[1], grad_img);
+         if (homogeneity)
+            G1 = gradient(P1[0],P1[1],back1[0],back1[1], grad_img);
          if (P1[0] > back1[0])
             n1++;
 
@@ -110,7 +115,8 @@ vector<double*>* construct_graph(vector<double*> Ltable, vector<double*> Ctable,
          }
          n2 = 2*j;
          area2 = area(P2[0],P2[1],back2[0],back2[1]);
-         //G2 = gradient(P2[0],P2[1],back2[0],back2[1],grad_img);
+         if (homogeneity)
+            G2 = gradient(P2[0],P2[1],back2[0],back2[1],grad_img);
          if (P2[0] > back2[0])
             n2++;
 
@@ -126,13 +132,19 @@ vector<double*>* construct_graph(vector<double*> Ltable, vector<double*> Ctable,
          if (C[0] < 0) {
             M1[0] = (P1[0]+back1[0])/2;
             M2[0] = (P2[0]+back2[0])/2;
-            if (LAMBDA1 > 0) {
-            curv = curvature(M1[0],M1[1],P1[0],P1[1],P2[0],P2[1],M2[0],M2[1]);
-            if (curv > 40) curv = 40; // avoid spikes in curvature
+            M1[1] = (P1[1]+back1[1])/2;
+            M2[1] = (P2[1]+back2[1])/2;
+            if (LAMBDA > 0) {
+               alpha = angle(back1[0], back1[1], P1[0], P1[1], P2[0], P2[1]);
+               beta = angle(P1[0], P1[1], P2[0], P2[1], back2[0], back2[1]);
+               if ((fabs(alpha) < (PI/2)) || (fabs(beta) < (PI/2))) continue;
+               curv = curvature(M1[0],M1[1],P1[0],P1[1],P2[0],P2[1],M2[0],M2[1]);
+               //cout << curv << endl;
+               if (curv > 40) continue; //curv = 10; // avoid spikes in curvature
             } else curv = 0;
-            w1 = distance(P1[0],P1[1],P2[0],P2[1]) + LAMBDA1*curv;
+            w1 = pow(distance(P1[0],P1[1],P2[0],P2[1]),ALPHA) + LAMBDA*curv;
          } else {
-            w1 = distance(P1[0],P1[1],C[0],C[1]) + distance(C[0],C[1],P2[0],P2[1]);
+            w1 = pow((distance(P1[0],P1[1],C[0],C[1]) + distance(C[0],C[1],P2[0],P2[1])), ALPHA);
          }
 
          // calculate W2
@@ -141,11 +153,12 @@ vector<double*>* construct_graph(vector<double*> Ltable, vector<double*> Ctable,
             carea = 0;
          else
             carea = triangle_area(P1[0],P1[1],C[0],C[1],P2[0],P2[1]);
-         //gapG = gradient(P1[0],P1[1],P2[0],P2[1], grad_img);
+         if (homogeneity)
+            gapG = gradient(P1[0],P1[1],P2[0],P2[1], grad_img);
          if (P1[0] > P2[0]) {
             gaparea = -gaparea;
             carea = -carea;
-            //gapG = -gapG;
+            gapG = -gapG;
          }
          if (use_corners) delete I;
 
@@ -157,7 +170,7 @@ vector<double*>* construct_graph(vector<double*> Ltable, vector<double*> Ctable,
 
             if (P2[0] > back2[0]) {
                dataout[1] = 2*n2 + 1;
-               dataout[2] = (area1 - area2)/2 + gaparea + carea; // + LAMBDA2*((G1 - G2)/2 + gapG);
+               dataout[2] = (area1 - area2)/2 + gaparea + carea - PSI*((G1 - G2)/2 + gapG);
                dataout[3] = w1;
                dataout[4] = 0; // dashed
                (*Gtable).push_back(dataout);
@@ -165,7 +178,7 @@ vector<double*>* construct_graph(vector<double*> Ltable, vector<double*> Ctable,
                dataout = new double[5];
                dataout[0] = 2*n1 + 1;
                dataout[1] = 2*n2;
-               dataout[2] = (-area1 + area2)/2 - gaparea - carea; // + LAMBDA2*((-G1 + G2)/2 - gapG);
+               dataout[2] = (-area1 + area2)/2 - gaparea - carea - PSI*((-G1 + G2)/2 - gapG);
                dataout[3] = w1;
                dataout[4] = 0; // dashed
                (*Gtable).push_back(dataout);
@@ -177,7 +190,7 @@ vector<double*>* construct_graph(vector<double*> Ltable, vector<double*> Ctable,
             }
             else {
                dataout[1] = 2*n2;
-               dataout[2] = (area1 + area2)/2 + gaparea + carea; // + LAMBDA2*((G1 + G2)/2 + gapG);
+               dataout[2] = (area1 + area2)/2 + gaparea + carea - PSI*((G1 + G2)/2 + gapG);
                dataout[3] = w1;
                dataout[4] = 0; // dashed
                (*Gtable).push_back(dataout);
@@ -185,7 +198,7 @@ vector<double*>* construct_graph(vector<double*> Ltable, vector<double*> Ctable,
                dataout = new double[5];
                dataout[0] = 2*n1 + 1;
                dataout[1] = 2*n2 + 1;
-               dataout[2] = (-area1 - area2)/2 - gaparea - carea; // + LAMBDA2*((-G1 - G2)/2 - gapG);
+               dataout[2] = (-area1 - area2)/2 - gaparea - carea - PSI*((-G1 - G2)/2 - gapG);
                dataout[3] = w1;
                dataout[4] = 0; // dashed
                (*Gtable).push_back(dataout);
@@ -203,7 +216,7 @@ vector<double*>* construct_graph(vector<double*> Ltable, vector<double*> Ctable,
 
             if (P2[0] > back2[0]) {
                dataout[1] = 2*n2 + 1;
-               dataout[2] = (-area1 - area2)/2 + gaparea + carea; // + LAMBDA2*((-G1 - G2)/2 + gapG);
+               dataout[2] = (-area1 - area2)/2 + gaparea + carea - PSI*((-G1 - G2)/2 + gapG);
                dataout[3] = w1;
                dataout[4] = 0; // dashed
                (*Gtable).push_back(dataout);
@@ -211,7 +224,7 @@ vector<double*>* construct_graph(vector<double*> Ltable, vector<double*> Ctable,
                dataout = new double[5];
                dataout[0] = 2*n1;
                dataout[1] = 2*n2;
-               dataout[2] = (area1 + area2)/2 - gaparea - carea; // + LAMBDA2*((G1 + G2)/2 - gapG);
+               dataout[2] = (area1 + area2)/2 - gaparea - carea - PSI*((G1 + G2)/2 - gapG);
                dataout[3] = w1;
                dataout[4] = 0; // dashed
                (*Gtable).push_back(dataout);
@@ -223,7 +236,7 @@ vector<double*>* construct_graph(vector<double*> Ltable, vector<double*> Ctable,
             }
             else {
                dataout[1] = 2*n2;
-               dataout[2] = (-area1 + area2)/2 + gaparea + carea; // + LAMBDA2*((-G1 + G2)/2 + gapG);
+               dataout[2] = (-area1 + area2)/2 + gaparea + carea - PSI*((-G1 + G2)/2 + gapG);
                dataout[3] = w1;
                dataout[4] = 0; // dashed
                (*Gtable).push_back(dataout);
@@ -231,7 +244,7 @@ vector<double*>* construct_graph(vector<double*> Ltable, vector<double*> Ctable,
                dataout = new double[5];
                dataout[0] = 2*n1;
                dataout[1] = 2*n2 + 1;
-               dataout[2] = (area1 - area2)/2 - gaparea - carea; // + LAMBDA2*((G1 - G2)/2 - gapG);
+               dataout[2] = (area1 - area2)/2 - gaparea - carea - PSI*((G1 - G2)/2 - gapG);
                dataout[3] = w1;
                dataout[4] = 0; // dashed
                (*Gtable).push_back(dataout);
@@ -570,5 +583,18 @@ double curvature(double P0x, double P0y, double P1x, double P1y, double P2x, dou
 
     return total;
 
+}
+
+double angle(double p1x, double p1y, double p2x, double p2y, double p3x, double p3y){
+   double p1,p2, value;
+
+   p1 = (p3x-p2x)*(p1x-p2x) + (p3y-p2y)*(p1y-p2y);
+   p2 = (p3x-p2x)*(p1y-p2y) - (p3y-p2y)*(p1x-p2x);
+
+   if (p1 == 0 && p2 == 0) return 0;
+
+   value = atan2(p2,p1);
+
+   return value;
 }
 

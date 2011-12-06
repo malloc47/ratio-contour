@@ -1,10 +1,6 @@
 # definitions
-objRRC = main.o construct_graph.o mat_main.o match.o
-srcRRC = main.cpp construct_graph.cpp mat_main.cpp match.c
-objbatch = batchRRC.o
-srcbatch = batchRRC.cpp
-objshare = CmdLine.o
-srcshare = CmdLine.cpp
+objRRC = main.o construct_graph.o mat_main.o match.o CmdLine.o
+srcRRC = main.cpp construct_graph.cpp mat_main.cpp match.c CmdLine.cpp
 
 #linker to use
 lnk = g++
@@ -15,26 +11,17 @@ cc = gcc
 
 # MAKE it happen
 
-all: RRC batchRRC
+all: RRC 
 
-RRC: $(objRRC) $(objshare)
-	$(lnk) $(dbg) -o RRC $(objRRC) $(objshare)
+RRC: $(objRRC)
+	$(lnk) $(dbg) -o RRC $(objRRC)
 
 $(objRRC): $(srcRRC)
 	$(cc) $(dbg) -c $(srcRRC)
 
-batchRRC: $(objbatch) $(objshare)
-	$(lnk) $(dbg) -o batchRRC $(objbatch) $(objshare)
-
-$(objbatch): $(srcbatch)
-	$(cc) $(dbg) -c $(srcbatch)
-
-$(objshare): $(srcshare)
-	$(cc) $(dbg) -c $(srcshare)
-
 install:
-	@mv RRC batchRRC ..
+	@mv RRC ..
 
 clean:
-	@rm -f $(objRRC) $(objbatch) $(objshare) RRC batchRRC
+	@rm -f $(objRRC) RRC
 

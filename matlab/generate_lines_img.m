@@ -4,9 +4,9 @@ list = dir(strcat(folder,'*.pgm'));
 
 for i=1:size(list,1)
     img = imread([folder list(i).name]);
-%     bw = edge(img,'canny');    
+    bw = edge(img,'canny');    
     name = list(i).name(1:(size(list(i).name,2)-4));
-%     imwrite(255*(~bw),[folder name '-canny.pgm']);
+    imwrite(255*(~bw),[folder name '-canny.pgm']);
     data = load([folder name '.lines'],'-ASCII');
 
 %     axis ij;

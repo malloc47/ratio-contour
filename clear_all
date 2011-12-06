@@ -1,10 +1,10 @@
 #!/bin/bash
 
 cd images
-rm -fr *.cycle *.eps *.png *.lines *.grad *.corners
+rm -fr *.cycle *.eps *.png *.lines *.map *.corners
 cd ..
 cd source
 make clean
 cd ..
-rm -fr RRC batchRRC
+rm -fr RRC
 

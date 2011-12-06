@@ -1659,10 +1659,10 @@ int delta;
     node *c=n;
     node *stop = G->nodelist - 1;
 
-    if (delta == INTEGER_MAX) {
+    /*    if (delta == INTEGER_MAX) {
 	fprintf (stderr, "\ndelta=Infinity, node=%i\n", (int) (n-G->nodelist));
 	fprintf (stderr, "There seems to be no perfect matching\n");
-    }
+	} */
 
     while (1) {
 	if (c->label == PLUS) {

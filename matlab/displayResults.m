@@ -38,7 +38,8 @@ for i=1:N
     else
         scale = 1;
     end
-    bmp = bmp + display_cycle(cycle, lines, corners, img, scale);
+    %bmp = bmp + 
+    display_cycle(cycle, lines, corners, img, scale);
     print('-r0','-dpng', [fname '-cycleRRC-' int2str(i-1)]);
     print('-depsc2', [fname '-cycleRRC-' int2str(i-1)]);
     close;

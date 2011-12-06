@@ -1,5 +1,5 @@
 
-    RRC (VERSION 1.0): A SALIENT BOUNDARY DETECTION TOOL BY
+    RRC (VERSION 2.0): A SALIENT BOUNDARY DETECTION TOOL BY
            COMBINING BOUNDARY AND REGION INFORMATION
 
 This software package is developed for detecting salient closed
@@ -12,10 +12,12 @@ for graph matching that is developed by W. Cook and A. Rohe. The
 technical details of this package can be found in the enclosed 
 file "document.pdf".
 
-Update: 06/24/2006
+Authors: Joachim Stahl and Song Wang
+
+Update: 08/11/2006
 
 
-                             INSTALL
+                              INSTALL
 
 After unpacking the package, in the RRC folder, run
      ./install
@@ -23,23 +25,32 @@ This will create an executable RRC.
 
 
                               USAGE
+
    (1) Go to the folder "matlab", in the Matlab environment, run
            preprocess('path/foo')
-to preprocess the image "foo.pgm" and write the output to "path/foo.lines".
+to preprocess the image "foo.pgm" and write the output to "path/foo.line
+s". To preprocess all .pgm files in 'path', use the function 
+batchPreprocess.m instead,
+           batchPreprocess('path')
 
    (2) From this installation folder, from the shell, run  
-          ./RRC path/foo [-n #]
-to extract the salient boundaries. "n" is the number of boundaries to be
-extracted. The default value is 1.
+          ./RRC path/foo
+to extract one salient boundary. We also provide the following choices:
+
+-l #    -   Set Lambda (default 0.0), a real positive number that weights
+            the continuity (curvature) term.
+-a #    -   Set Alpha (default 1.0), the exponent for the gap lengths.It 
+            can take any real value. Recommended range between 1.0 and 2.0. 
+-n #    -   Set the number of produced boundaries (default 1).
+-h      -   To use intensity homogeneity instead of region area. 
 
    (3) Go to the folder "matlab", in the Matlab environment, run
             displayResults('path/foo', n)
-to display the n detected boundaries, which are also saved as EPS and PNG
-images in the folder "path/". 
+to display the n detected boundaries (numbered from 0 to n-1), which are 
+also saved as EPS and PNG images in the folder "path/". 
 
-A set of test images used in the enclosed "document.pdf" are provided in 
+A set of test images used in the enclosed "document.pdf" are included in
 the folder "images".
-
 
                         CONTACT & BUG REPORT
 Song Wang
@@ -50,3 +61,4 @@ Columbia, SC 29208
 Email: songwang@cse.sc.edu
 TEL: 1-803-777-2487
 FAX: 1-803-777-3767
+http://www.cse.sc.edu/~songwang

@@ -25,6 +25,7 @@ class CmdArgInt : public CmdArg
 public:
     CmdArgInt(bool = false, int = -999);
     int value() const;
+    void setValue(int);
 
 private:
     int _value;
@@ -32,12 +33,14 @@ private:
 
 inline CmdArgInt::CmdArgInt(bool found, int defaultValue) : CmdArg(found), _value(defaultValue) { }
 inline int CmdArgInt::value() const { return _value; }
+inline void CmdArgInt::setValue(int i) { _value = i; }
 
 class CmdArgDouble : public CmdArg
 {
 public:
     CmdArgDouble(bool = false, double = 1e-999);
     double value() const;
+    void setValue(double);
 
 private:
     double _value;
@@ -45,6 +48,7 @@ private:
 
 inline CmdArgDouble::CmdArgDouble(bool found, double defaultValue) : CmdArg(found), _value(defaultValue) { }
 inline double CmdArgDouble::value() const { return _value; }
+inline void CmdArgDouble::setValue(double d) { _value = d; }
 
 class CmdArgString : public CmdArg
 {
