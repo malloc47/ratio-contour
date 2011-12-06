@@ -1,0 +1,72 @@
+
+Ratio Contour implementation (ver 0.1)
+--------------------------------------------0
+By Song Wang and Joachim S. Stahl
+
+This program is tested in Red Hat Linux 3.2.2-5. It should work in other 
+Linux enviroment with the same or newer version of kernel. The techniques 
+are documented in our paper "Salient Closed Boundary Extraction with 
+Ratio Contour", which is included in this package as pami05.pdf.
+
+Install:
+-------
+Uncompress the package by
+
+> tar zxf rc-install.tgz
+
+To install simply type
+
+> ./install
+
+
+
+Usage:
+-----
+After installation go to the newly created folder
+
+> cd ~/ratiocontour
+
+Set the environment variables by running one of the following commands,
+depending on your shell:
+
+> source setBASH
+for bash shell
+
+> source setCSH
+for csh shell
+
+This setting works for the current sessions and needs to be called
+every time a new session is started in order to use ratiocontour.
+(If you want to make these setting permanent it is possible to
+modify ~/.bashrc or ~/.cshrc for this purpose).
+
+To process an image located in /path/foo.pgm go to the folder 
+~/ratiocontour/code/ and run
+
+> ./Rcontour /path/foo.pgm
+
+When the program is finished processing the image, it will output the top 5
+results in the form of
+/path/foo-RC-#.jpg
+and
+/path/foo-RC-#.eps
+where # is a number from 1 to 5.
+
+If you have Matlab software installed, you can also run the program in Matlab.
+In the matlab environment, go to '~ratiocontour/code' and process an image by 
+
+Rcontour '/path/foo.pgm'
+
+
+---------------------------------------------
+Contact: 
+
+Song Wang
+Department of Computer Science and Engineering
+University of South Carolina
+Columbia, SC 29208
+Email: songwang@cse.sc.edu
+Voice: 803-777-2487
+Fax: 803-777-3767
+http://www.cse.sc.edu/~songwang
+-----------------------------------------------
