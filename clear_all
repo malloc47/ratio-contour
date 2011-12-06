@@ -1,0 +1,10 @@
+#!/bin/bash
+
+cd images
+rm -fr *.cycle *.eps *.png *.lines *.grad *.corners
+cd ..
+cd source
+make clean
+cd ..
+rm -fr RRC batchRRC
+

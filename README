@@ -1,72 +1,52 @@
 
-Ratio Contour implementation (ver 0.1)
---------------------------------------------0
-By Song Wang and Joachim S. Stahl
+    RRC (VERSION 1.0): A SALIENT BOUNDARY DETECTION TOOL BY
+           COMBINING BOUNDARY AND REGION INFORMATION
 
-This program is tested in Red Hat Linux 3.2.2-5. It should work in other 
-Linux enviroment with the same or newer version of kernel. The techniques 
-are documented in our paper "Salient Closed Boundary Extraction with 
-Ratio Contour", which is included in this package as pami05.pdf.
+This software package is developed for detecting salient closed
+boundaries from an image. The main codes were implemented
+in C++ using gcc-4.1 in Linux. It also needs the recent Matlab
+Software (with Image Processing Toolbox) to perform some image 
+preprocessing and result display. This work is covered by Copyright 
+(c) University of South Carolina. It incorporates Blossom4 code
+for graph matching that is developed by W. Cook and A. Rohe. The 
+technical details of this package can be found in the enclosed 
+file "document.pdf".
 
-Install:
--------
-Uncompress the package by
-
-> tar zxf rc-install.tgz
-
-To install simply type
-
-> ./install
+Update: 06/24/2006
 
 
+                             INSTALL
 
-Usage:
------
-After installation go to the newly created folder
-
-> cd ~/ratiocontour
-
-Set the environment variables by running one of the following commands,
-depending on your shell:
-
-> source setBASH
-for bash shell
-
-> source setCSH
-for csh shell
-
-This setting works for the current sessions and needs to be called
-every time a new session is started in order to use ratiocontour.
-(If you want to make these setting permanent it is possible to
-modify ~/.bashrc or ~/.cshrc for this purpose).
-
-To process an image located in /path/foo.pgm go to the folder 
-~/ratiocontour/code/ and run
-
-> ./Rcontour /path/foo.pgm
-
-When the program is finished processing the image, it will output the top 5
-results in the form of
-/path/foo-RC-#.jpg
-and
-/path/foo-RC-#.eps
-where # is a number from 1 to 5.
-
-If you have Matlab software installed, you can also run the program in Matlab.
-In the matlab environment, go to '~ratiocontour/code' and process an image by 
-
-Rcontour '/path/foo.pgm'
+After unpacking the package, in the RRC folder, run
+     ./install
+This will create an executable RRC.
 
 
----------------------------------------------
-Contact: 
+                              USAGE
+   (1) Go to the folder "matlab", in the Matlab environment, run
+           preprocess('path/foo')
+to preprocess the image "foo.pgm" and write the output to "path/foo.lines".
 
+   (2) From this installation folder, from the shell, run  
+          ./RRC path/foo [-n #]
+to extract the salient boundaries. "n" is the number of boundaries to be
+extracted. The default value is 1.
+
+   (3) Go to the folder "matlab", in the Matlab environment, run
+            displayResults('path/foo', n)
+to display the n detected boundaries, which are also saved as EPS and PNG
+images in the folder "path/". 
+
+A set of test images used in the enclosed "document.pdf" are provided in 
+the folder "images".
+
+
+                        CONTACT & BUG REPORT
 Song Wang
+Computer Vision Lab
 Department of Computer Science and Engineering
 University of South Carolina
 Columbia, SC 29208
 Email: songwang@cse.sc.edu
-Voice: 803-777-2487
-Fax: 803-777-3767
-http://www.cse.sc.edu/~songwang
------------------------------------------------
+TEL: 1-803-777-2487
+FAX: 1-803-777-3767
