@@ -58,10 +58,11 @@ int CCutil_getedgelist_n2(vector<double*> *graph, int ncount, int ecount,
     int i, k;
     double *edge;
 
-    *elist = new int[2*ecount];
-    *elen = new int[ecount];
-    *elen2 = new int[ecount];
-    *esolid = new int[ecount];
+    *elist = (int*)malloc(sizeof(int)*2*ecount);
+    *elen = (int*)malloc(sizeof(int)*ecount);
+    *elen2 = (int*)malloc(sizeof(int)*ecount);
+    *esolid = (int*)malloc(sizeof(int)*ecount);
+//new int[ecount];
 
 
     for (i = 0, k = 0; i < ecount; i++) {

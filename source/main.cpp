@@ -83,7 +83,9 @@ int main(int argc, char** argv) {
        lines_in >> one_line[0] >> one_line[1] >> one_line[2] >> one_line[3];
        lines.push_back(one_line);      
    }
+   one_line = lines[lines.size()-1];
    lines.pop_back();
+   if (one_line != NULL) delete[] one_line;
    cout << lines.size() << " lines read\n";
    lines_in.close();
 
@@ -94,7 +96,9 @@ int main(int argc, char** argv) {
          corners_in >> one_line[0] >> one_line[1] >> one_line[2];
          corners.push_back(one_line);      
       }
+      one_line = corners[corners.size()-1];
       corners.pop_back();
+      if (one_line != NULL) delete[] one_line;
       cout << corners.size() << " corners read\n";
       corners_in.close();
    }
@@ -119,7 +123,7 @@ int main(int argc, char** argv) {
 
    
    (*graph).pop_back();
-   delete dataout;
+   delete[] dataout;
 
    for (int i = 0; i < (int)(*graph).size(); i++) {
       dataout = (*graph)[i];
@@ -129,10 +133,39 @@ int main(int argc, char** argv) {
 
    RC(graph, (4*lines.size()), (*graph).size(), number.value(), fname);
 
+
+// CLEANUP
+
+   for (int i=0; i<(int)lines.size(); i++) {
+      one_line = lines[i];
+      delete[] one_line;
+   }
+   lines.clear();
+
+   for (int i=0; i<(int)corners.size(); i++) {
+      one_line = corners[i];
+      delete[] one_line;
+   }
+   corners.clear();
+
+   for (int i=0; i<(int)gradient.size(); i++) {
+      one_line = gradient[i];
+      delete[] one_line;
+   }
+   gradient.clear();
+
+   for (int i=0; i<(int)(*graph).size(); i++) {
+      one_line = (*graph)[i];
+      delete[] one_line;
+   }
+   (*graph).clear();
+   delete graph;
+
    } catch(string msg) {
       cerr << msg << endl;;
       return 1;
    }
+
 
    return 0;
 }

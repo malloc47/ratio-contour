@@ -257,7 +257,7 @@ vector<double*>* construct_graph(vector<double*> Ltable, vector<double*> Ctable,
 
          }
 
-         delete C;
+         delete[] C;
 
          count_dashed += 2;
          if (w1 > MAX_W1) MAX_W1 = w1;
