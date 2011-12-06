@@ -55,7 +55,7 @@ char **av;
        fprintf (stderr, " (3) Fix a bug in previous release on May 06, 2004, to produce ONLY ONE cycle.\n");
        fprintf (stderr, "                    ---Song Wang, 10/08/2004.\n");           
        fprintf (stderr, "------------------------------------------------------------------\n");
-       fprintf (stderr, "Usage: RatioContour3 image [NumIter(1)]\n\n");
+       fprintf (stderr, "Usage: RatioContour4 image [NumIter(1)]\n\n");
        fprintf (stderr, "       Note: image is a image.w file with the format:\n");
        fprintf (stderr, "       Head line: #v(even)  #e \n");
        fprintf (stderr, "       Each line: v1 v2 weight length solid(1)/dashed(0)\n");     

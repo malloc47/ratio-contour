@@ -11,15 +11,15 @@
 
   BLOSSOMOBJS = $(BLOSSOM:.c=.o)
 
-all    : RatioContour3
+all    : RatioContour4
 
-RatioContour3    : $(BLOSSOMOBJS)
+RatioContour4    : $(BLOSSOMOBJS)
 	 $(LD) -o $@  $(BLOSSOMOBJS) -lm 
 
 install : all
 
 clean  :
-	rm -f *.o RatioContour3
+	rm -f *.o RatioContour4
 
 depend :
 	makedepend $(INCDIRS) $(SEQU)

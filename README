@@ -1,58 +1,33 @@
 
-    RRC (VERSION 3.1): A SALIENT BOUNDARY DETECTION TOOL BY
+    RRC (VERSION 4.0): A SALIENT BOUNDARY DETECTION TOOL BY
            COMBINING BOUNDARY AND REGION INFORMATION
 
 This software package is developed for detecting salient closed
-boundaries from an image. The main codes were implemented
-in C++ using gcc-4.1 in Linux. It also needs the recent Matlab
-Software (with Image Processing Toolbox) to perform some image 
-preprocessing and result display. This work is covered by Copyright 
-(c) University of South Carolina. It incorporates Blossom4 code
-for graph matching that is developed by W. Cook and A. Rohe. The 
-technical details of this package can be found in the enclosed 
-file "document.pdf".
+boundaries in an image. The main compoent is implemented in C++ using
+gcc-4.1 in Linux. It also requires a recent Matlab (with Image
+Processing Toolbox) to perform some image preprocessing and result
+display. This work is covered by Copyright (c) University of South
+Carolina. It incorporates Blossom4 code for graph matching that is
+developed by W. Cook and A. Rohe.
 
-Authors: Joachim Stahl and Song Wang
+Authors: Joachim Stahl, Jarrell Waggoner, and Song Wang
+With contributions from: Kenton Oliver, Andrei Barbu, 
+Siddharth Narayanaswamy, and Jeffrey Mark Siskind
 
-Update: 08/11/2006
+Update: 10/18/2010
 
+                              BUILD
 
-                              INSTALL
-
-After unpacking the package, in the RRC folder, run
-     ./install
-This will create an executable RRC.
-
+After unpacking the package run
+    make 
+This will create an executable.
 
                               USAGE
 
-   (1) Go to the folder "matlab", in the Matlab environment, run
-           preprocess('path/foo')
-to preprocess the image "foo.pgm" and write the output to "path/foo.line
-s". To preprocess all .pgm files in 'path', use the function 
-batchPreprocess.m instead,
-           batchPreprocess('path')
+Examine rc.sh, which illustrates the script and executible components
+of the RC pipeline.
 
-   (2) From this installation folder, from the shell, run  
-          ./RRC path/foo
-to extract one salient boundary. We also provide the following choices:
-
--l #    -   Set Lambda (default 0.0), a real positive number that weights
-            the continuity (curvature) term.
--a #    -   Set Alpha (default 1.0), the exponent for the gap lengths.It 
-            can take any real value. Recommended range between 1.0 and 2.0. 
--n #    -   Set the number of produced boundaries (default 1).
--h      -   To use intensity homogeneity instead of region area. 
-
-   (3) Go to the folder "matlab", in the Matlab environment, run
-            displayResults('path/foo', n)
-to display the n detected boundaries (numbered from 0 to n-1), which are 
-also saved as EPS and PNG images in the folder "path/". 
-
-A set of test images used in the enclosed "document.pdf" are included in
-the folder "images".
-
-                        CONTACT & BUG REPORT
+                        CONTACT & BUG REPORTS
 Song Wang
 Computer Vision Lab
 Department of Computer Science and Engineering
