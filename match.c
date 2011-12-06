@@ -281,8 +281,9 @@ char *mat_filename;
     int hh, i, end1, end2, cycle1_min, cycle2_min, cycle1_orig_min;
     int iter;
     char current_filename[255];
-    int node_inv[ncount], merge_w1[ncount], merge_w2[ncount]; 
-    edge *e;
+    int node_inv[ncount], merge_w1[ncount], merge_w2[ncount];
+    double timer; // added 5/11/07 Joachim
+    //edge *e;
 
     hh =0;
     for (i = 0; i < ecount; i++)
@@ -371,17 +372,18 @@ char *mat_filename;
 	  } 
         } 
 
+
     #if PRINT_LEVEL
         PG = &G;
     #endif
 
         cycle1_min = 600;
-        cycle1_orig_min = 600;
+        //cycle1_orig_min = 600;
+        cycle1_orig_min = 0; //This is for negative cycles
         cycle2_min=1;
 
         for (i = 0; i < ecount; i++) 
-           (*elen_bak2)[i] = (*elen)[i]; /* make a temp copy of current edge weight */      
-\
+           (*elen_bak2)[i] = (*elen)[i]; /* make a temp copy of current edge weight */          
 
         /* linearly transforming the (first) edge weights */
         while (cycle1_min!=0) {
@@ -402,11 +404,19 @@ char *mat_filename;
                 goto CLEANUP;
             }
 
+
             /* do perfect matching on solid-dashed graph G */
+            //timer = clock() / (double)CLOCKS_PER_SEC; // added 5/11/07 Joachim
+            /*for (i=0; i < ecount; i++) {
+               printf("%d\n",(*elen)[i]);
+            }
+            printf("EOL\n");*/
             if (perfect_match (&G, *elen)){
                 fprintf (stderr, "perfect matching failed\n");
                 goto CLEANUP;
             }
+            //timer = (clock() / (double)CLOCKS_PER_SEC ) - timer; // added 5/11/07 Joachim
+            //fprintf(stderr, "Perfect match time: %g\n", timer); // added 5/11/07 Joachim
 
             /* find the (minimum-cycle-ratio) negative weight cycle with perfect matching */
             if (label_match (&G, *elen, *elen2, *elen_bak2, *esolid, 
@@ -438,14 +448,20 @@ char *mat_filename;
           if (((*elabel_penul)[i] == 1) && ((*esolid)[i] != 1)) {
 	      node_inv[G.edgelist[i].orig_nod1] = 1;
               node_inv[G.edgelist[i].orig_nod2] = 1;
+              // following added for negative cycle with mirror edges
+              node_inv[G.edgelist[i].orig_nod1-(2*(G.edgelist[i].orig_nod1 % 2)-1)] = 1;
+              node_inv[G.edgelist[i].orig_nod2-(2*(G.edgelist[i].orig_nod2 % 2)-1)] = 1;
+              //
 	  }
 	}
 
         for (i = 0; i < ecount; i++)
 	  if ((*esolid)[i] != 1)
 	    if ((node_inv[G.edgelist[i].orig_nod1] == 1) || (node_inv[G.edgelist[i].orig_nod2] == 1)) {
-               (*elen)[i]=600;
-               (*elen2)[i]=1;
+               //(*elen)[i]=600;
+               //(*elen2)[i]=1;
+               (*elen)[i] = 600; // modified for negative cycle
+               (*elen2)[i] = 0;
             }
     }
 
